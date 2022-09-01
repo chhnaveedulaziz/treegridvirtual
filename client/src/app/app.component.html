@@ -1,0 +1,192 @@
+<div class="control-section" style="width: 100%; float: left;">
+  <ejs-treegrid
+  #treegrid
+  (contextMenuClick)="contextMenuClick($event)"
+  [dataSource]="data"
+  childMapping="subtasks"
+  height="450"
+  [treeColumnIndex]="1"
+  [allowPaging]="false"
+  [pageSettings]="pageSettings"
+  allowExcelExport="true"
+  allowPdfExport="true"
+  allowSorting="true"
+  [contextMenuItems]="contextMenuItems"
+  [showColumnChooser]="true"
+  [toolbar]="toolbar"
+  allowReordering="true"
+  [selectionSettings]="selectionSettings"
+  allowFiltering="true"
+  [filterSettings]="filterSettings"
+  [sortSettings]="sortSettings"
+  GridCopyOption="CopyData,IncludeHeaders"
+  GridPasteOption="PasteData,ExcludeFirstLine"
+  [enableInfiniteScrolling]=true
+  >
+    <e-columns >
+      <e-column *ngFor="let column of columns; let i = index;"
+                [visible]="column.visible"
+                [field]="column.field"
+                [headerText]='column.headerText'
+                [isPrimaryKey]="column.isPrimaryKey"
+                [width]='column.width' 
+                [textAlign]='column.textAlign'
+                [format]="column.format"
+                [editType]="column.editType"
+                [defaultValue]="column.defaultValue"
+                [minWidth]='column.width' 
+                [id]='i' >   
+      </e-column>
+  </e-columns>
+  </ejs-treegrid>
+</div>
+
+<ejs-dialog
+  #editColumnDialog
+  [visible]="false"
+  header="Edit Column"
+  [target]="deleteColTargetElement"
+  width="250px"
+  [buttons]="editColButtons"
+>
+  <ng-template #content>
+    <form [formGroup]="editColumnFormGroup">
+      <label class="green-label" > Name*</label>
+      <div class="e-input-group">
+        <input class="e-input"  type="text" formControlName="name" placeholder="Name" required />
+      </div>
+      <label class="green-label" > Data Type*</label>
+      <ejs-dropdownlist
+        class="col-type"
+        #dropdown
+        formControlName="type"
+        [dataSource]="sportsData"
+        [fields]="fields"
+        floatLabelType="Never"
+      >
+      </ejs-dropdownlist>
+      <label class="green-label" > Default Value*</label>
+      <div class="e-input-group">
+        <input class="e-input" type="text"  formControlName="defaultValue" />
+      </div>
+      <label class="brown-label" > Width</label>
+      <div class="e-input-group">
+        <input class="e-input" placeholder="width"  formControlName="width" name="width"  >
+      </div>
+      <label class="brown-label" > Min Column Width</label>
+      <div class="e-input-group">
+        <input class="e-input"  type="text" formControlName="minWidth" name="minWidth"  >
+      </div>
+      <label class="brown-label" > Text Align</label>
+      <ejs-dropdownlist
+      class="col-type"
+      formControlName="textAlign"
+      [dataSource]="textAlignData"
+      [fields]="fields"
+      placeholder="Select Text Align "
+      floatLabelType="Never"
+    >
+    </ejs-dropdownlist>
+    </form>
+  </ng-template>
+</ejs-dialog>
+
+
+
+<ejs-dialog
+  [visible]="false"
+  #addColumnDialog
+  header="Add New Column"
+  [target]="targetElement"
+  width="250px"
+  [buttons]="buttons"
+>
+  <ng-template #content>
+    <form [formGroup]="skillForm">
+      <label class="green-label" > Name*</label>
+      <div class="e-input-group">
+        <input class="e-input" formControlName="name" type="text"  />
+      </div>
+
+
+      <label class="green-label" > Data Type*</label>
+      <ejs-dropdownlist
+        class="col-type"
+        #dropdown
+        formControlName="type"
+        [dataSource]="sportsData"
+        [fields]="fields"
+        floatLabelType="Never"
+      >
+      </ejs-dropdownlist>
+      <label class="green-label" > Default Value*</label>
+      <div class="e-input-group">
+        <input class="e-input" type="text"  formControlName="defaultValue" required="required"/>
+      </div>
+
+      <label class="brown-label" > Width</label>
+      <div class="e-input-group">
+        <input class="e-input"  formControlName="width" name="width"  >
+      </div>
+      <label class="brown-label" > Min Column Width</label>
+      <div class="e-input-group">
+        <input class="e-input" type="text"  formControlName="minWidth" name="minWidth"  >
+      </div>
+
+      <label class="brown-label" > Text Align</label>
+      <ejs-dropdownlist
+      class="col-type"
+      formControlName="textAlign"
+      [dataSource]="textAlignData"
+      [fields]="fields"
+      floatLabelType="Never"
+    >
+    </ejs-dropdownlist>
+    </form>
+  </ng-template>
+</ejs-dialog>
+<div id='container' style="height:600px;">
+  <ejs-dialog
+  #addRowDialog
+  [visible]="false"
+  header="Add New Row"
+  [target]="targetElement"
+  width="250px"
+  [visible]="false"
+  content="{ X: 160, Y: 14 }"
+  [buttons]="addNewRowbuttons"
+>
+  <ng-template #content>
+    <form [formGroup]="form" (ngSubmit)="submitRowData()" autocomplete="off">
+      <input class="e-input" type="text" formControlName="taskName" placeholder="task name" required /><br /><br />
+      <input class="e-input" type="date" formControlName="startDate" placeholder="start date" /><br /><br />
+      <input class="e-input" type="date" formControlName="endDate" placeholder="end Date" /><br /><br /> 
+       <input class="e-input" type="number" formControlName="duration" placeholder="Duration" min="0" /><br /><br />
+      <input class="e-input" type="number" formControlName="progress" placeholder="Progress" min="0" /><br /><br />
+      <input class="e-input" type="text" formControlName="priority" placeholder="Priority" /><br /><br />
+    </form>
+  </ng-template>
+</ejs-dialog>
+</div>
+<div class="d-flex justify-content-center" *ngIf="loading">
+  <div class="spinner-border" role="status" >
+    <span class="sr-only" id="loading"></span>
+  </div>
+</div>
+<div class="property-panel-section">
+  <div class="property-panel-header">Properties</div>
+  <table id="property" class="property-panel-table" title="Properties" style="width: 100%">
+    <tr *ngFor="let column of columns; let i = index;">
+      <td style="width: 70%">
+        <div>
+          {{ column.headerText }}
+        </div>
+      </td>
+      <td style="width: 30%;padding:10px 10px 10px 0px">
+        <div class="col-md-6">
+          <ejs-checkbox  (change)="onClickColum($event, column.field)"></ejs-checkbox>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
